@@ -1,0 +1,38 @@
+//Logic
+
+pub fn hashcode(string: &str, integer: i32) -> u64 {
+  let mut hashcode = 0;
+  for i in 0..string.len() {
+    hashcode = hashcode * 10 + string.as_bytes()[i] as u64;
+  }
+  hashcode = hashcode * 10 + integer as u64;
+  hashcode % 1000000000000000000
+}
+
+//API
+
+use actix_web::{web, HttpResponse};
+
+#[actix_web::main]
+async fn main() {
+  let app = actix_web::App::new();
+
+  app.get("/hashcode")
+    .and(web::get().to(hashcode));
+
+  app.run();
+}
+
+async fn hashcode(web::Query(params): web::Query) -> HttpResponse {
+  let string = params.get("string").unwrap();
+  let integer = params.get("integer").unwrap().parse::<i32>().unwrap();
+
+  let hashcode = hashcode(string, integer);
+
+  HttpResponse::Ok().body(format!("X0{}", hashcode))
+}
+
+
+//curl -X GET "http://localhost:8080/hashcode?string=chandresh&integer=123456"
+//X01234567890
+
