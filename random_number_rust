@@ -1,3 +1,10 @@
+//Dependencies for an toml
+
+[dependencies]
+actix-web = "x.x.x"
+actix-cors = "0.5.4" # Use the appropriate version
+
+
 //Logic
 
 pub fn hashcode(string: &str, integer: i32) -> u64 {
@@ -11,17 +18,44 @@ pub fn hashcode(string: &str, integer: i32) -> u64 {
 
 //API
 
-use actix_web::{web, HttpResponse};
+//try this 
+
+use actix_web::{web, HttpResponse, HttpServer, App};
+use actix_cors::Cors;
+
+// ... (your hashcode function)
 
 #[actix_web::main]
-async fn main() {
-  let app = actix_web::App::new();
+async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| {
+        let cors = Cors::default()
+            .allow_any_origin()
+            .allowed_methods(vec!["GET"])
+            .allowed_headers(vec![http::header::ACCEPT, http::header::CONTENT_TYPE])
+            .max_age(3600);
 
-  app.get("/hashcode")
-    .and(web::get().to(hashcode));
-
-  app.run();
+        App::new()
+            .wrap(cors)
+            .service(web::resource("/hashcode").route(web::get().to(hashcode)))
+    })
+    .bind("127.0.0.1:8080")?
+    .run()
+    .await
 }
+
+
+//use actix_web::{web, HttpResponse};
+//use actix_cors::Cors;
+
+//#[actix_web::main]
+//async fn main() {
+//  let app = actix_web::App::new();
+
+//  app.get("/hashcode")
+//    .and(web::get().to(hashcode));
+
+//  app.run();
+//}
 
 async fn hashcode(web::Query(params): web::Query) -> HttpResponse {
   let string = params.get("string").unwrap();
