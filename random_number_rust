@@ -23,7 +23,7 @@ pub fn hashcode(string: &str, integer: i32) -> u64 {
 use actix_web::{web, HttpResponse, HttpServer, App};
 use actix_cors::Cors;
 
-// ... (your hashcode function)
+// hashcode function is here
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
