@@ -1,0 +1,17 @@
+pub fn hashcode(string: &str, integer: i32) -> u64 {
+    let mut hashcode = 0;
+    for i in 0..string.len() {
+        hashcode = hashcode * 10 + string.as_bytes()[i] as u64;
+    }
+    hashcode = hashcode * 10 + integer as u64;
+    hashcode % 1000000000000000000
+}
+
+fn main() {
+    // call here hashcode according to need 
+    let string = "chandresh";
+    let integer = 123456;
+    let hashcode_value = hashcode(string, integer);
+
+    println!("Hashcode: X0{}", hashcode_value);
+}
